@@ -12,11 +12,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 const services = [
-  { label: "My Progress", href: "/progress", image: "/assets/images/progress.png" },
+  { label: "My Progress", href: "/dashboard#journey", image: "/assets/images/progress.png" },
   { label: "Assessment", href: "/assessment", image: "/assets/images/assessment.png" },
   { label: "AI Interview", href: "/ai-interview", image: "/assets/images/ai-interview.png", isNew: true },
   { label: "Profile Builder", href: "/profile", image: "/assets/images/report.png" },
-  { label: "Career Counselling", href: "/counselling", image: "/assets/images/career-counselling.png" },
+  { label: "Expert Interview", href: "/interview", image: "/assets/images/career-counselling.png" },
   { label: "Webinar Series", href: "/webinars", image: "/assets/images/banner.png" },
 ];
 

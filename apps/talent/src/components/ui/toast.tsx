@@ -2,7 +2,7 @@
 
 import { Toast as ToastPrimitive } from "@base-ui/react/toast"
 import { cn } from "cn"
-import { CircleAlertIcon, CircleCheckIcon, XIcon } from "lucide-react"
+import { CircleAlertIcon, CircleCheckIcon, InfoIcon, XIcon } from "lucide-react"
 
 const toastManager = ToastPrimitive.createToastManager()
 
@@ -13,6 +13,9 @@ const toast = {
   },
   error(title: string, description?: string) {
     return toastManager.add({ title, description, type: "error", priority: "high" })
+  },
+  info(title: string, description?: string) {
+    return toastManager.add({ title, description, type: "info" })
   },
 }
 
@@ -30,6 +33,8 @@ function ToastList() {
     >
       {item.type === "error" ? (
         <CircleAlertIcon className="mt-0.5 size-4 shrink-0 text-destructive" aria-hidden />
+      ) : item.type === "info" ? (
+        <InfoIcon className="mt-0.5 size-4 shrink-0 text-brand-600" aria-hidden />
       ) : (
         <CircleCheckIcon className="mt-0.5 size-4 shrink-0 text-emerald-600" aria-hidden />
       )}

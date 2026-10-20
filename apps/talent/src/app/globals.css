@@ -22,9 +22,22 @@
   --color-brand-800: var(--brand-800);
   --color-brand-900: var(--brand-900);
   --color-brand-950: var(--brand-950);
-  --font-sans: "Proxima Nova", proxima-nova, "Proxima Nova Fallback", Arial, sans-serif;
+  --color-ink-700: var(--ink-700);
+  --color-ink-800: var(--ink-800);
+  --color-ink-900: var(--ink-900);
+  --color-ink-950: var(--ink-950);
+  --color-gold-50: var(--gold-50);
+  --color-gold-100: var(--gold-100);
+  --color-gold-200: var(--gold-200);
+  --color-gold-300: var(--gold-300);
+  --color-gold-400: var(--gold-400);
+  --color-gold-500: var(--gold-500);
+  --color-gold-600: var(--gold-600);
+  --color-gold-700: var(--gold-700);
+  --color-canvas: var(--canvas);
+  --font-sans: var(--font-jakarta), "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono);
-  --font-heading: "Proxima Nova", proxima-nova, "Proxima Nova Fallback", Arial, sans-serif;
+  --font-heading: var(--font-fraunces), Georgia, "Times New Roman", serif;
   --color-viz-series-1: var(--viz-series-1);
   --color-viz-series-2: var(--viz-series-2);
   --color-viz-stage-1: var(--viz-stage-1);
@@ -70,6 +83,21 @@
   --brand-800: #1e40af;
   --brand-900: #1e3a8a;
   --brand-950: #1e293b; /* text ink only (slate), never a background */
+
+  /* Premium accents: navy text, soft gold highlights, light gray canvas */
+  --ink-700: #26397a;
+  --ink-800: #1a2c5e;
+  --ink-900: #111f47;
+  --ink-950: #0b1533;
+  --gold-50: #fbf7ec;
+  --gold-100: #f5ead0;
+  --gold-200: #ecd7a3;
+  --gold-300: #e0be6f;
+  --gold-400: #d4a94a;
+  --gold-500: #bf9134;
+  --gold-600: #9c7426;
+  --gold-700: #7a5a1e;
+  --canvas: #f4f5f7;
 
   --background: #ffffff;
   --foreground: var(--brand-950);
