@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { cn } from "cn";
+import { publicPath } from "@/lib/base-path";
 
 const slides = [
   {
@@ -90,7 +91,7 @@ export function BannerCarousel() {
 
               <div className="relative h-56 sm:h-72">
                 <Image
-                  src={slide.image}
+                  src={publicPath(slide.image)}
                   alt=""
                   fill
                   sizes="(min-width: 1280px) 520px, (min-width: 768px) 45vw, 100vw"

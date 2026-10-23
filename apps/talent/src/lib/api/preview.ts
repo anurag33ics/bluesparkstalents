@@ -2,6 +2,7 @@ import "server-only";
 import { cookies } from "next/headers";
 import { failure, type ApiResult } from "./result";
 import type {
+  AccountSettings,
   AiInterviewOverview,
   AiInterviewReport,
   AiInterviewSession,
@@ -103,6 +104,8 @@ function resolve(scenario: PreviewScenario, path: string, query: Record<string, 
         return hiring(scenario, at);
       case "notifications":
         return notifications(scenario, at);
+      case "settings":
+        return settings(scenario, at);
     }
   }
 
@@ -889,6 +892,68 @@ function notifications(scenario: PreviewScenario, at: Clock): NotificationFeed {
 
   const feed = items[scenario];
   return { unreadCount: feed.filter((item) => !item.readAt).length, items: feed };
+}
+
+function settings(scenario: PreviewScenario, at: Clock): AccountSettings {
+  const on = { email: true, sms: false, whatsapp: true };
+
+  return {
+    email: user.email,
+    pendingEmail: null,
+    phone: scenario === "new" ? null : "+919812345670",
+    timeZone: "Asia/Kolkata",
+    createdAt: at.ago(24 * 47),
+    signIn: {
+      hasPassword: true,
+      passwordChangedAt: at.ago(24 * 47),
+      google: scenario === "listed" ? { email: "khushee.sharma@gmail.com", connectedAt: at.ago(24 * 30) } : null,
+    },
+    notifications: {
+      status_change: on,
+      action_required: { email: true, sms: true, whatsapp: true },
+      reminder: { email: true, sms: true, whatsapp: true },
+      recruiter: on,
+      payment: { email: true, sms: false, whatsapp: false },
+      security: { email: true, sms: false, whatsapp: false },
+      product_news: { email: false, sms: false, whatsapp: false },
+    },
+    requiredNotifications: { payment: ["email"], security: ["email"] },
+    sessions: [
+      {
+        id: "ses_current",
+        device: "Chrome on Windows",
+        deviceType: "desktop",
+        location: "Pune, India",
+        signedInAt: at.ago(24 * 3),
+        lastActiveAt: at.ago(0),
+        current: true,
+      },
+      {
+        id: "ses_phone",
+        device: "Safari on iPhone",
+        deviceType: "mobile",
+        location: "Pune, India",
+        signedInAt: at.ago(24 * 12),
+        lastActiveAt: at.ago(5),
+        current: false,
+      },
+      {
+        id: "ses_laptop",
+        device: "Edge on Windows",
+        deviceType: "desktop",
+        location: "Mumbai, India",
+        signedInAt: at.ago(24 * 26),
+        lastActiveAt: at.ago(24 * 9),
+        current: false,
+      },
+    ],
+    dataExport:
+      scenario === "listed"
+        ? { status: "ready", requestedAt: at.ago(26), url: "#preview-export", expiresAt: at.ahead(24 * 6) }
+        : null,
+    deletionScheduledFor: null,
+    deletionGraceDays: 30,
+  };
 }
 
 /* ----------------------------------------------------------------------------

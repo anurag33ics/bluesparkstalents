@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { LayoutGrid } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { publicPath } from "@/lib/base-path";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -41,7 +42,7 @@ export function AllServicesMenu() {
               className="flex-col gap-2 rounded-xl px-2 py-3 text-center focus:bg-brand-50"
             >
               <Image
-                src={service.image}
+                src={publicPath(service.image)}
                 alt=""
                 width={64}
                 height={64}

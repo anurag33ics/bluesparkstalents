@@ -7,14 +7,19 @@ import {
   aiSetupSchema,
   availabilitySchema,
   cancelInterviewSchema,
+  changeEmailSchema,
+  changePasswordSchema,
   checkUpload,
+  deleteAccountSchema,
   documentTypeSchema,
   documentUploadRules,
   isEditableSection,
+  notificationPreferencesSchema,
   profileDeclarationSchema,
   profileSectionSchemas,
   resumeUploadRules,
   supportRequestSchema,
+  timeZoneSchema,
   verificationSubmitSchema,
   visibilitySchema,
 } from "@/lib/journey/schemas";
@@ -22,6 +27,7 @@ import type {
   AiInterviewSession,
   CandidateProfile,
   CheckoutOrder,
+  DataExport,
   ExpertInterview,
   Payment,
   StoredFile,
@@ -231,4 +237,66 @@ export async function submitSupportRequest(values: unknown): Promise<ApiResult<{
   const input = await validated(supportRequestSchema, values);
   if (!input.ok) return input;
   return mutate("POST", "/me/support-requests", { body: input.data });
+}
+
+/* Settings ------------------------------------------------------------------- */
+
+export async function updateNotificationPreferences(values: unknown): Promise<ApiResult<null>> {
+  const input = await validated(notificationPreferencesSchema, values);
+  if (!input.ok) return input;
+  return mutate("PUT", "/me/settings/notifications", { body: input.data });
+}
+
+export async function updateTimeZone(values: unknown): Promise<ApiResult<null>> {
+  const input = await validated(timeZoneSchema, values);
+  if (!input.ok) return input;
+  return mutate("PUT", "/me/settings/time-zone", { body: input.data });
+}
+
+/** The API emails a confirmation link to the new address; the old one stays active until then. */
+export async function requestEmailChange(values: unknown): Promise<ApiResult<null>> {
+  const input = await validated(changeEmailSchema, values);
+  if (!input.ok) return input;
+  return mutate("POST", "/me/settings/email", { body: input.data });
+}
+
+export async function cancelEmailChange(): Promise<ApiResult<null>> {
+  return mutate("DELETE", "/me/settings/email");
+}
+
+export async function changePassword(values: unknown): Promise<ApiResult<null>> {
+  const input = await validated(changePasswordSchema, values);
+  if (!input.ok) return input;
+  const { currentPassword, newPassword } = input.data;
+  return mutate("PUT", "/me/settings/password", { body: { currentPassword, newPassword } });
+}
+
+/** The API refuses this unless the account also has a password, so nobody is locked out. */
+export async function disconnectGoogle(): Promise<ApiResult<null>> {
+  return mutate("DELETE", "/me/settings/google");
+}
+
+export async function signOutSession(sessionId: unknown): Promise<ApiResult<null>> {
+  const id = idOrNull(sessionId);
+  if (!id) return invalidId();
+  return mutate("DELETE", `/me/sessions/${id}`);
+}
+
+export async function signOutOtherSessions(): Promise<ApiResult<null>> {
+  return mutate("POST", "/me/sessions/sign-out-others");
+}
+
+export async function requestDataExport(): Promise<ApiResult<DataExport>> {
+  return mutate("POST", "/me/settings/data-export");
+}
+
+export async function requestAccountDeletion(values: unknown): Promise<ApiResult<null>> {
+  const input = await validated(deleteAccountSchema, values);
+  if (!input.ok) return input;
+  const { reason, currentPassword } = input.data;
+  return mutate("POST", "/me/settings/deletion", { body: { reason, currentPassword } });
+}
+
+export async function cancelAccountDeletion(): Promise<ApiResult<null>> {
+  return mutate("DELETE", "/me/settings/deletion");
 }

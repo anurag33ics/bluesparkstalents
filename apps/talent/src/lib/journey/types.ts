@@ -610,6 +610,77 @@ export type SupportRequestInput = {
 };
 
 /* ----------------------------------------------------------------------------
+ * Account settings
+ * ------------------------------------------------------------------------- */
+
+export const notificationTopics = [
+  "status_change",
+  "action_required",
+  "reminder",
+  "recruiter",
+  "payment",
+  "security",
+  "product_news",
+] as const;
+
+export type NotificationTopic = (typeof notificationTopics)[number];
+
+export const notificationChannels = ["email", "sms", "whatsapp"] as const;
+
+export type NotificationChannel = (typeof notificationChannels)[number];
+
+/** In-app notifications are always on; these are the extra channels per topic. */
+export type NotificationPreferences = Record<NotificationTopic, Record<NotificationChannel, boolean>>;
+
+export type ActiveSession = {
+  id: string;
+  /** e.g. "Chrome on Windows" */
+  device: string;
+  deviceType: "desktop" | "mobile" | "tablet";
+  /** Approximate, from the IP address. */
+  location: string | null;
+  signedInAt: IsoDateTime;
+  lastActiveAt: IsoDateTime;
+  /** The session making this request. */
+  current: boolean;
+};
+
+export type DataExport = {
+  status: "pending" | "ready" | "expired";
+  requestedAt: IsoDateTime;
+  /** Short-lived signed URL while `status` is "ready". */
+  url: string | null;
+  expiresAt: IsoDateTime | null;
+};
+
+export type AccountSettings = {
+  email: string;
+  /** New sign-in email waiting for the candidate to confirm from their inbox. */
+  pendingEmail: string | null;
+  /** Mobile number from the profile; SMS and WhatsApp need one. */
+  phone: string | null;
+  /** IANA zone used for emails, reminders and interview times. */
+  timeZone: string;
+  createdAt: IsoDateTime;
+  signIn: {
+    /** False for accounts created with Google that never set a password. */
+    hasPassword: boolean;
+    passwordChangedAt: IsoDateTime | null;
+    google: { email: string; connectedAt: IsoDateTime } | null;
+  };
+  notifications: NotificationPreferences;
+  /** Channels a topic can't turn off, e.g. email for security alerts and receipts. */
+  requiredNotifications: Partial<Record<NotificationTopic, NotificationChannel[]>>;
+  sessions: ActiveSession[];
+  dataExport: DataExport | null;
+  /** Set while a deletion request is in its grace period. */
+  deletionScheduledFor: IsoDateTime | null;
+  deletionGraceDays: number;
+};
+
+export type DeletionReason = "found_job" | "not_useful" | "privacy" | "too_many_emails" | "other";
+
+/* ----------------------------------------------------------------------------
  * Staff: admins, interviewers and recruiters
  * ------------------------------------------------------------------------- */
 

@@ -9,6 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 
 /*
@@ -275,6 +276,70 @@ export function CheckboxField({
           {error}
         </p>
       )}
+    </div>
+  );
+}
+
+/**
+ * On/off setting that takes effect when the form is saved. With `hideLabel`,
+ * the label is for screen readers only (e.g. a cell in a settings grid).
+ */
+export function SwitchField({
+  name,
+  label,
+  description,
+  hideLabel,
+  className,
+  disabled: disabledProp,
+}: {
+  name: string;
+  label: React.ReactNode;
+  description?: React.ReactNode;
+  hideLabel?: boolean;
+  className?: string;
+  disabled?: boolean;
+}) {
+  const [field, , helpers] = useField<boolean>(name);
+  const ids = useFieldIds(name);
+  const disabled = useDisabled(disabledProp);
+
+  const control = (
+    <Switch
+      id={ids.id}
+      checked={!!field.value}
+      disabled={disabled}
+      onCheckedChange={(checked) => {
+        void helpers.setValue(checked);
+        void helpers.setTouched(true, false);
+      }}
+      aria-describedby={description ? ids.hintId : undefined}
+    />
+  );
+
+  if (hideLabel) {
+    return (
+      <span className={cn("inline-flex", className)}>
+        <Label htmlFor={ids.id} className="sr-only">
+          {label}
+        </Label>
+        {control}
+      </span>
+    );
+  }
+
+  return (
+    <div className={cn("flex items-start justify-between gap-4", className)}>
+      <div className="min-w-0">
+        <Label htmlFor={ids.id} className="cursor-pointer text-sm font-semibold leading-5 text-brand-950">
+          {label}
+        </Label>
+        {description && (
+          <p id={ids.hintId} className="mt-0.5 text-xs leading-5 text-muted-foreground">
+            {description}
+          </p>
+        )}
+      </div>
+      {control}
     </div>
   );
 }

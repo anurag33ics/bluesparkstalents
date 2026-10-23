@@ -2,6 +2,7 @@ import "server-only";
 import { cache } from "react";
 import { apiRequest } from "./client";
 import type {
+  AccountSettings,
   AiInterviewOverview,
   AiInterviewSession,
   Billing,
@@ -50,3 +51,5 @@ export const getHiring = cache(() => apiRequest<Hiring>("/me/hiring"));
 export const getNotifications = cache((limit: number) =>
   apiRequest<NotificationFeed>("/me/notifications", { query: { limit } })
 );
+
+export const getSettings = cache(() => apiRequest<AccountSettings>("/me/settings"));
