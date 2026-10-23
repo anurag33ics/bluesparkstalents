@@ -1,21 +1,20 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 export default function EmailVerificationSuccess() {
-    const router = useRouter();
     const [countdown, setCountdown] = useState(5);
 
     useEffect(() => {
         if (countdown <= 0) {
-            router.push("/dashboard");
+            // The dashboard lives in the talent app, so this is a full page load.
+            window.location.assign("/talent/dashboard");
             return;
         }
         const timer = setTimeout(() => setCountdown((prev) => prev - 1), 1000);
         return () => clearTimeout(timer);
-    }, [countdown, router]);
+    }, [countdown]);
 
     return (
         <div className="min-h-screen flex flex-col justify-between items-center px-6 py-10">

@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Served under /employers on the website's port (Next.js multi-zones).
+  basePath: "/employers",
 };
 
 export default nextConfig;

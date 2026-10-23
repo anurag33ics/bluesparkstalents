@@ -7,7 +7,6 @@ import {
   RecruiterActivityPanel,
   UpcomingInterviewsPanel,
 } from "@/components/dashboard/activity-panels";
-import { WelcomeHeader } from "@/components/dashboard/welcome-header";
 import { ApiErrorState } from "@/components/journey/api-error-state";
 import { AutoRefresh } from "@/components/journey/auto-refresh";
 import { JourneyOverview } from "@/components/journey/journey-overview";
@@ -24,16 +23,10 @@ export default async function DashboardPage() {
 
   return (
     <PageShell>
-      <WelcomeHeader
-        name={user.ok ? user.data.firstName : "there"}
-        hiringStatus={journey.ok ? journey.data.hiringStatus : null}
-        planName={journey.ok ? journey.data.activePlanName : null}
-      />
-
-      <div className="mt-8 flex flex-col gap-12">
+      <div className="flex flex-col gap-12">
         {journey.ok ? (
           <>
-            <JourneyOverview journey={journey.data} />
+            <JourneyOverview journey={journey.data} name={user.ok ? user.data.firstName : "there"} />
             <JourneySteps journey={journey.data} />
             {/* Picks up changes made by others (reviewers, interviewers, payment confirmation) while the page is open. */}
             <AutoRefresh seconds={30} />
@@ -65,8 +58,6 @@ export default async function DashboardPage() {
         ) : (
           <ApiErrorState error={journey.error} />
         )}
-
-
       </div>
     </PageShell>
   );

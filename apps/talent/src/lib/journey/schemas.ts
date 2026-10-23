@@ -4,7 +4,7 @@
  * the same rules; these exist for UX, not as the source of truth.
  */
 import * as Yup from "yup";
-import type { ProfileSectionKey } from "./types";
+import { notificationChannels, notificationTopics, type ProfileSectionKey } from "./types";
 
 const currentYear = new Date().getFullYear();
 const monthPattern = /^\d{4}-(0[1-9]|1[0-2])$/;
@@ -24,6 +24,7 @@ export const checkStatuses = ["pending", "approved", "changes_required", "reject
 export const recommendations = ["strong_yes", "yes", "maybe", "no"] as const;
 export const opportunityStages = ["shortlisted", "interviewing", "offer", "hired", "not_selected", "withdrawn"] as const;
 export const slotDurations = [30, 45, 60] as const;
+export const deletionReasons = ["found_job", "not_useful", "privacy", "too_many_emails", "other"] as const;
 
 /** Empty form inputs become null instead of failing the number type check. */
 const numberOrNull = () =>
@@ -292,6 +293,68 @@ export const supportRequestSchema = Yup.object({
   topic: Yup.string().oneOf(supportTopics, "Choose a topic").required("Choose a topic"),
   message: Yup.string().trim().min(20, "Describe the issue in at least 20 characters").max(2000, "Keep it under 2000 characters").required("Describe the issue"),
 });
+
+/* ----------------------------------------------------------------------------
+ * Account settings
+ * ------------------------------------------------------------------------- */
+
+const channelSwitches = Yup.object(
+  Object.fromEntries(notificationChannels.map((channel) => [channel, Yup.boolean().required()]))
+);
+
+export const notificationPreferencesSchema = Yup.object(
+  Object.fromEntries(notificationTopics.map((topic) => [topic, channelSwitches.required()]))
+);
+
+function isValidTimeZone(value: string | undefined) {
+  if (!value) return false;
+  try {
+    new Intl.DateTimeFormat("en", { timeZone: value });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export const timeZoneSchema = Yup.object({
+  timeZone: Yup.string().max(64).required("Choose a time zone").test("time-zone", "Choose a time zone from the list", isValidTimeZone),
+});
+
+/** Accounts created with Google may not have a password; the API asks for it when they do. */
+const currentPassword = () => Yup.string().max(128, "Keep it under 128 characters").default("");
+
+const newPassword = () =>
+  Yup.string()
+    .min(8, "Use at least 8 characters")
+    .max(128, "Keep it under 128 characters")
+    .matches(/[A-Za-z]/, "Include at least one letter")
+    .matches(/\d/, "Include at least one number");
+
+export const changeEmailSchema = Yup.object({
+  newEmail: Yup.string().trim().lowercase().max(254, "Keep it under 254 characters").email("Enter a valid email address").required("Enter your new email address"),
+  currentPassword: currentPassword(),
+});
+
+export const changePasswordSchema = Yup.object({
+  currentPassword: currentPassword(),
+  newPassword: newPassword()
+    .notOneOf([Yup.ref("currentPassword")], "Choose a different password from your current one")
+    .required("Enter a new password"),
+  confirmPassword: Yup.string().oneOf([Yup.ref("newPassword")], "Passwords don't match").required("Re-enter your new password"),
+});
+
+export const deleteAccountSchema = Yup.object({
+  reason: Yup.string().nullable().oneOf([...deletionReasons, null], "Choose a reason").default(null),
+  currentPassword: currentPassword(),
+  confirmation: Yup.string().trim().oneOf(["DELETE"], "Type DELETE to confirm").required("Type DELETE to confirm"),
+});
+
+/** Forms ask for the current password only when the account has one. */
+export function requirePassword<S extends Yup.AnyObjectSchema>(schema: S, hasPassword: boolean): S {
+  return hasPassword
+    ? (schema.shape({ currentPassword: currentPassword().required("Enter your current password") }) as unknown as S)
+    : schema;
+}
 
 /* ----------------------------------------------------------------------------
  * Staff
