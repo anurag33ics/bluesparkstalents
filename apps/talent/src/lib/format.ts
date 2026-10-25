@@ -62,6 +62,18 @@ export function formatRelative(value: IsoDateTime, now = Date.now()) {
   return "just now";
 }
 
+/**
+ * Old and new names of a zone (Asia/Calcutta, Asia/Kolkata) resolve to the same
+ * id within one runtime, so compare zones through this. Null if unknown.
+ */
+export function canonicalTimeZone(zone: string) {
+  try {
+    return new Intl.DateTimeFormat("en", { timeZone: zone }).resolvedOptions().timeZone;
+  } catch {
+    return null;
+  }
+}
+
 export function initials(name: string) {
   return name
     .split(/\s+/)

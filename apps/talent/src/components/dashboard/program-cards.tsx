@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { publicPath } from "@/lib/base-path";
 
 const programs = [
   {
@@ -41,7 +42,7 @@ export function ProgramCards() {
                 Apply now
               </Link>
               <Image
-                src={program.image}
+                src={publicPath(program.image)}
                 alt=""
                 width={112}
                 height={112}

@@ -12,7 +12,7 @@ import { ProgressRing } from "./meter";
 import { stageIcons } from "./stage-icons";
 import { StatusBadge } from "./status-badge";
 
-export function JourneyOverview({ journey }: { journey: Journey }) {
+export function JourneyOverview({ journey, name }: { journey: Journey; name: string }) {
   const progress = journeyProgress(journey);
   const { current } = progress;
   const action = primaryAction(current);
@@ -34,14 +34,18 @@ export function JourneyOverview({ journey }: { journey: Journey }) {
           className="pointer-events-none absolute inset-0 opacity-[0.05] [background-image:radial-gradient(rgba(11,21,51,0.9)_1px,transparent_1px)] [background-size:22px_22px]"
         />
 
-        <div className="relative grid items-center gap-10 md:grid-cols-[1fr_auto]">
-          <div>
-            <p className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.22em] text-gold-600">
-              <Compass className="size-4" aria-hidden />
-              Your hiring journey
-            </p>
+        <div className="relative border-b border-black/6 pb-8">
+          <h1 className="font-heading text-4xl font-medium tracking-tight text-ink-950 sm:text-5xl">
+            Welcome back, <span className="text-brand-600">{name}</span>
+          </h1>
+          <p className="mt-3 max-w-xl text-base leading-7 text-muted-foreground">
+            Here&apos;s where you are on your way to getting hired.
+          </p>
+        </div>
 
-            <div className="mt-5 flex items-start gap-4">
+        <div className="relative mt-8 grid items-center gap-10 md:grid-cols-[1fr_auto]">
+          <div className="min-w-0">
+            <div className="flex items-start gap-4">
               <span className={cn("flex size-14 shrink-0 items-center justify-center rounded-2xl ring-1", accentTile[meta ? stageAccent[meta.key] : "gold"])}>
                 <Icon className="size-6" strokeWidth={1.8} aria-hidden />
               </span>
@@ -70,13 +74,6 @@ export function JourneyOverview({ journey }: { journey: Journey }) {
               <Link href={action.href} className={cn(buttonVariants({ variant: "gold", size: "cta" }), "group h-11 px-6")}>
                 {action.label}
                 <ArrowRight className="transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden />
-              </Link>
-              <Link
-                href="#journey-steps"
-                className="inline-flex items-center gap-2 rounded-xl bg-white px-3.5 py-2.5 text-sm font-semibold text-ink-900 ring-1 ring-black/10 transition-colors hover:bg-slate-50"
-              >
-                <ListChecks className="size-4 text-brand-600" aria-hidden />
-                View all steps
               </Link>
             </div>
           </div>

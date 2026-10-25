@@ -3,6 +3,7 @@ import type {
   AvailabilityStatus,
   CheckStatus,
   ContactRequest,
+  DeletionReason,
   DocumentType,
   EmploymentType,
   ExperienceLevel,
@@ -10,6 +11,8 @@ import type {
   HiringStatus,
   JobType,
   ListingStatus,
+  NotificationChannel,
+  NotificationTopic,
   Offer,
   OpportunityStage,
   PaymentStatus,
@@ -171,6 +174,30 @@ export const skillLevelLabels: Record<SkillLevel, string> = {
   intermediate: "Intermediate",
   advanced: "Advanced",
   expert: "Expert",
+};
+
+export const notificationTopicLabels: Record<NotificationTopic, { label: string; description: string }> = {
+  status_change: { label: "Journey updates", description: "A step is approved, completed or moves forward." },
+  action_required: { label: "Action needed", description: "Something needs fixing or a reply from you." },
+  reminder: { label: "Interview reminders", description: "Before your AI mock and one-to-one interviews." },
+  recruiter: { label: "Recruiter activity", description: "Shortlists, contact requests and offers." },
+  payment: { label: "Payments & receipts", description: "Payment confirmations, failures and invoices." },
+  security: { label: "Account & security", description: "New sign-ins, password and email changes." },
+  product_news: { label: "Tips & product news", description: "Career tips, events and new features. Occasional." },
+};
+
+export const notificationChannelLabels: Record<NotificationChannel, string> = {
+  email: "Email",
+  sms: "SMS",
+  whatsapp: "WhatsApp",
+};
+
+export const deletionReasonLabels: Record<DeletionReason, string> = {
+  found_job: "I found a job",
+  not_useful: "The platform isn't useful for me",
+  privacy: "Privacy concerns",
+  too_many_emails: "Too many emails or messages",
+  other: "Something else",
 };
 
 export const genderLabels: Record<NonNullable<PersonalDetails["gender"]>, string> = {

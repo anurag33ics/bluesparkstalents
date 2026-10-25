@@ -44,7 +44,8 @@ function Callout({
   );
 }
 
-function PaymentHistory({ payments }: { payments: Payment[] }) {
+/** Expects payments newest first. */
+export function PaymentHistory({ payments }: { payments: Payment[] }) {
   if (!payments.length) {
     return <EmptyState icon={Receipt} title="No payments yet" description="Receipts and invoices for your plan will appear here." />;
   }
